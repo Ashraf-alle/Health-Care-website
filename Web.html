@@ -1,0 +1,805 @@
+bash
+
+cat > /mnt/user-data/outputs/healthcoach.html << 'HTMLEOF'
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>HealthCoach – Improve Your Health and Nutrition</title>
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&family=Raleway:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Lato',sans-serif;color:#333;overflow-x:hidden}
+a{text-decoration:none;color:inherit}
+ul{list-style:none}
+img{max-width:100%;display:block}
+
+:root{
+  --teal:#4ecdc4;
+  --teal-dark:#38b2aa;
+  --navy:#2c3e50;
+  --navy2:#1a252f;
+  --gray:#777;
+  --light:#f9f9f9;
+  --white:#fff;
+  --border:#e8e8e8;
+}
+
+.container{max-width:1170px;margin:0 auto;padding:0 15px}
+
+/* TOPBAR */
+.topbar{background:#2c3e50;padding:8px 0;font-size:13px;color:#ccc}
+.topbar-inner{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+.topbar-left span{margin-right:20px}
+.topbar-left i{color:var(--teal);margin-right:5px}
+.topbar-right a{color:#ccc;margin-left:10px;font-size:13px;transition:color .2s}
+.topbar-right a:hover{color:var(--teal)}
+
+/* NAVBAR */
+.navbar{background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.08);position:sticky;top:0;z-index:999}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;height:70px}
+.logo{font-family:'Raleway',sans-serif;font-size:26px;font-weight:900;color:#2c3e50;letter-spacing:-0.5px}
+.logo span{color:var(--teal)}
+.nav-menu{display:flex;align-items:center;gap:4px}
+.nav-menu a{font-size:13px;font-weight:700;color:#2c3e50;padding:8px 13px;text-transform:uppercase;letter-spacing:.5px;transition:color .2s}
+.nav-menu a:hover,.nav-menu a.active{color:var(--teal)}
+.nav-menu .nav-contact{background:var(--teal);color:#fff!important;padding:9px 22px;border-radius:3px;transition:background .2s!important}
+.nav-menu .nav-contact:hover{background:var(--teal-dark)!important}
+.hamburger{display:none;background:none;border:none;cursor:pointer;flex-direction:column;gap:5px;padding:4px}
+.hamburger span{display:block;width:24px;height:2px;background:#2c3e50;transition:all .3s}
+.mobile-menu{display:none;background:#fff;border-top:2px solid var(--teal);padding:8px 0}
+.mobile-menu.open{display:block}
+.mobile-menu a{display:block;padding:12px 20px;font-size:14px;font-weight:700;color:#2c3e50;border-bottom:1px solid #f5f5f5;text-transform:uppercase;letter-spacing:.5px}
+.mobile-menu a:hover{color:var(--teal);padding-left:26px}
+
+/* HERO */
+.hero{position:relative;min-height:600px;display:flex;align-items:center;overflow:hidden;background:#2c3e50}
+.hero-bg{
+  position:absolute;inset:0;
+  /* =============================================
+     HERO BACKGROUND IMAGE
+     Replace  images/hero.jpg  with your image
+  ============================================= */
+  background:url('images/hero.jpg') center/cover no-repeat;
+  opacity:.35
+}
+.hero-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(44,62,80,.92) 0%,rgba(78,205,196,.25) 100%)}
+.hero-right-img{position:absolute;right:0;bottom:0;height:100%;width:45%;z-index:1}
+/* =============================================
+   HERO RIGHT SIDE PERSON IMAGE
+   Replace  images/hero-person.jpg  with your image
+   (use a fitness person photo, transparent bg works best)
+============================================= */
+.hero-right-img img{width:100%;height:100%;object-fit:cover;object-position:top center;opacity:.55;mix-blend-mode:luminosity}
+.hero-content{position:relative;z-index:2;max-width:600px;padding:90px 0}
+.hero-content h1{font-family:'Raleway',sans-serif;font-size:clamp(30px,5vw,56px);font-weight:900;color:#fff;line-height:1.15;margin-bottom:20px}
+.hero-content h1 span{color:var(--teal)}
+.hero-content p{color:rgba(255,255,255,.82);font-size:16px;line-height:1.8;margin-bottom:34px;max-width:480px}
+.hero-btns{display:flex;gap:14px;flex-wrap:wrap}
+.btn-teal{background:var(--teal);color:#fff;padding:13px 30px;border-radius:3px;font-weight:700;font-size:13px;letter-spacing:1px;border:2px solid var(--teal);transition:all .25s;display:inline-block;text-transform:uppercase}
+.btn-teal:hover{background:var(--teal-dark);border-color:var(--teal-dark);transform:translateY(-2px);box-shadow:0 8px 20px rgba(78,205,196,.4)}
+.btn-outline-white{background:transparent;color:#fff;padding:13px 30px;border-radius:3px;font-weight:700;font-size:13px;letter-spacing:1px;border:2px solid rgba(255,255,255,.7);transition:all .25s;display:inline-block;text-transform:uppercase}
+.btn-outline-white:hover{background:#fff;color:var(--teal)}
+
+/* PROGRAMS */
+.programs{padding:0;background:#fff}
+.prog-grid{display:grid;grid-template-columns:repeat(3,1fr)}
+.prog-card{position:relative;overflow:hidden;cursor:pointer;height:280px}
+/* =============================================
+   PROGRAM CARD IMAGES
+   Replace src values below with your images
+============================================= */
+.prog-card img{width:100%;height:100%;object-fit:cover;transition:transform .45s}
+.prog-card:hover img{transform:scale(1.06)}
+.prog-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(44,62,80,.88) 0%,transparent 55%);display:flex;flex-direction:column;justify-content:flex-end;padding:26px}
+.prog-overlay h3{color:#fff;font-family:'Raleway',sans-serif;font-size:18px;font-weight:800;margin-bottom:8px}
+.prog-overlay p{color:rgba(255,255,255,.8);font-size:13px;line-height:1.6;margin-bottom:14px}
+.prog-overlay a{color:var(--teal);font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;border:1px solid var(--teal);padding:6px 15px;border-radius:2px;display:inline-block;transition:all .2s}
+.prog-overlay a:hover{background:var(--teal);color:#fff}
+
+/* ABOUT */
+.about{padding:85px 0;background:#f9f9f9}
+.about-inner{display:grid;grid-template-columns:1fr 1fr;gap:65px;align-items:center}
+.about-img{position:relative;z-index:1}
+.about-img::before{content:'';position:absolute;top:-14px;left:-14px;right:14px;bottom:14px;border:3px solid var(--teal);border-radius:4px;z-index:-1}
+/* =============================================
+   ABOUT SECTION — COACH IMAGE
+   Replace  images/coach.jpg  with your image
+============================================= */
+.about-img img{width:100%;border-radius:4px;box-shadow:0 15px 50px rgba(0,0,0,.15);position:relative;z-index:1}
+.sec-tag{color:var(--teal);font-size:11px;font-weight:800;letter-spacing:3px;text-transform:uppercase;display:block;margin-bottom:10px}
+.about-text h2{font-family:'Raleway',sans-serif;font-size:clamp(22px,3vw,34px);font-weight:900;color:#2c3e50;line-height:1.3;margin-bottom:18px}
+.about-text p{color:#666;font-size:15px;line-height:1.9;margin-bottom:14px}
+.author-row{display:flex;align-items:center;gap:14px;margin-top:24px;padding-top:20px;border-top:1px solid #e5e5e5}
+/* =============================================
+   AUTHOR AVATAR — ABOUT SECTION
+   Replace  images/author.jpg  with your image
+============================================= */
+.author-row img{width:55px;height:55px;border-radius:50%;object-fit:cover;border:3px solid var(--teal)}
+.author-name{font-weight:700;font-size:15px;color:#2c3e50}
+.author-role{font-size:13px;color:var(--teal);font-weight:600}
+
+/* CONSULTATION */
+.consult-strip{background:var(--teal);padding:52px 0}
+.consult-grid{display:grid;grid-template-columns:1fr 340px 1fr;gap:30px;align-items:center}
+.cs-side h4{font-family:'Raleway',sans-serif;font-size:15px;font-weight:900;color:#fff;margin-bottom:8px;text-transform:uppercase;letter-spacing:1px}
+.cs-side p{color:rgba(255,255,255,.85);font-size:13px;line-height:1.7;margin-bottom:8px}
+.cs-side a{color:#fff;font-size:11px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;text-decoration:underline}
+.cs-right-col{text-align:right}
+.cs-form{background:rgba(0,0,0,.18);border-radius:6px;padding:24px 22px}
+.cs-form h4{color:#fff;font-family:'Raleway',sans-serif;font-size:14px;font-weight:900;text-align:center;margin-bottom:16px;text-transform:uppercase;letter-spacing:2px}
+.cs-form input,.cs-form select{width:100%;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);border-radius:3px;padding:10px 13px;color:#fff;font-family:'Lato',sans-serif;font-size:13px;margin-bottom:10px;outline:none}
+.cs-form input::placeholder{color:rgba(255,255,255,.7)}
+.cs-form select option{color:#333}
+.cs-form button{width:100%;background:#2c3e50;color:#fff;border:none;border-radius:3px;padding:12px;font-family:'Raleway',sans-serif;font-weight:900;font-size:12px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:background .2s}
+.cs-form button:hover{background:#1a252f}
+
+/* TESTIMONIALS */
+.testimonials{padding:85px 0;background:#fff}
+.sec-head{text-align:center;margin-bottom:50px}
+.sec-head h2{font-family:'Raleway',sans-serif;font-size:clamp(24px,3vw,36px);font-weight:900;color:#2c3e50}
+.testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:26px}
+.testi-card{background:#f9f9f9;border-radius:5px;padding:30px 26px;border:1px solid #eee;transition:all .3s}
+.testi-card:hover{transform:translateY(-5px);box-shadow:0 14px 40px rgba(0,0,0,.08);border-color:var(--teal)}
+.testi-q{font-size:56px;color:var(--teal);line-height:.8;font-family:Georgia,serif;margin-bottom:14px;opacity:.55}
+.testi-card p{color:#666;font-size:14px;line-height:1.85;margin-bottom:22px;font-style:italic}
+.testi-author{display:flex;align-items:center;gap:12px}
+/* =============================================
+   TESTIMONIAL AVATARS
+   Replace images/testi1.jpg, testi2.jpg, testi3.jpg
+============================================= */
+.testi-author img{width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid var(--teal)}
+.t-name{font-weight:700;font-size:14px;color:#2c3e50}
+.t-role{font-size:12px;color:var(--teal);font-weight:600}
+.testi-dots{text-align:center;margin-top:36px;display:flex;justify-content:center;gap:8px}
+.testi-dots span{width:10px;height:10px;border-radius:50%;background:#ddd;cursor:pointer;transition:background .2s}
+.testi-dots span.active{background:var(--teal)}
+
+/* HOW IT WORKS */
+.how{padding:85px 0;background:#f9f9f9}
+.how-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;margin-top:48px}
+.how-card{background:#fff;border-radius:5px;padding:34px 20px;text-align:center;border:1px solid #eee;transition:all .3s}
+.how-card:hover{transform:translateY(-6px);box-shadow:0 14px 40px rgba(78,205,196,.15);border-color:var(--teal)}
+.how-icon{width:78px;height:78px;border-radius:50%;background:#e8faf9;border:2px solid var(--teal);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:30px;color:var(--teal);transition:all .3s}
+.how-card:hover .how-icon{background:var(--teal);color:#fff}
+.how-card h4{font-family:'Raleway',sans-serif;font-size:14px;font-weight:900;color:#2c3e50;margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px}
+.how-card p{color:#888;font-size:13px;line-height:1.75}
+
+/* SUCCESS STORIES */
+.stories{padding:85px 0;background:#fff}
+.story-wrap{display:grid;grid-template-columns:1fr 1fr;margin-top:48px;border-radius:6px;overflow:hidden;box-shadow:0 10px 50px rgba(0,0,0,.1)}
+/* =============================================
+   SUCCESS STORY IMAGE
+   Replace  images/story.jpg  with your image
+============================================= */
+.story-img img{width:100%;height:420px;object-fit:cover}
+.story-text{padding:48px 44px;background:#f9f9f9;display:flex;flex-direction:column;justify-content:center}
+.story-text p{color:#666;font-size:14px;line-height:1.9;margin-bottom:14px}
+.s-name{font-family:'Raleway',sans-serif;font-size:16px;font-weight:900;color:#2c3e50;margin-top:6px}
+.s-role{font-size:13px;color:var(--teal);font-weight:600}
+.story-nav{display:flex;gap:10px;margin-top:22px}
+.story-nav button{width:36px;height:36px;border-radius:50%;border:2px solid var(--teal);background:transparent;color:var(--teal);cursor:pointer;font-size:13px;transition:all .2s}
+.story-nav button:hover{background:var(--teal);color:#fff}
+
+/* FREE BANNER */
+.free-banner{background:var(--teal);padding:58px 0;text-align:center}
+.free-banner h2{font-family:'Raleway',sans-serif;font-size:clamp(20px,3vw,32px);font-weight:900;color:#fff;margin-bottom:10px}
+.free-banner p{color:rgba(255,255,255,.88);font-size:15px;margin-bottom:28px}
+.btn-dark{background:#2c3e50;color:#fff;padding:14px 36px;border-radius:3px;font-family:'Raleway',sans-serif;font-weight:900;font-size:12px;letter-spacing:2px;text-transform:uppercase;border:2px solid #2c3e50;cursor:pointer;transition:all .25s;display:inline-block}
+.btn-dark:hover{background:transparent;color:#2c3e50}
+
+/* PRICING */
+.pricing{padding:85px 0;background:#f9f9f9}
+.price-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;margin-top:48px}
+.price-card{background:#fff;border-radius:5px;padding:36px 20px;text-align:center;border:1px solid #eee;transition:all .3s;position:relative;overflow:hidden}
+.price-card:hover{transform:translateY(-6px);box-shadow:0 14px 50px rgba(0,0,0,.1)}
+.price-card.popular{background:var(--teal);border-color:var(--teal);transform:scale(1.04);box-shadow:0 14px 50px rgba(78,205,196,.35)}
+.price-card.popular:hover{transform:scale(1.04) translateY(-4px)}
+.pop-badge{position:absolute;top:14px;right:-24px;background:#e74c3c;color:#fff;font-size:10px;font-weight:800;padding:4px 32px;transform:rotate(45deg);letter-spacing:1px;text-transform:uppercase}
+.plan-name{font-size:11px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:#aaa;margin-bottom:12px}
+.price-card.popular .plan-name{color:rgba(255,255,255,.8)}
+.price-num{font-family:'Raleway',sans-serif;font-size:56px;font-weight:900;color:#2c3e50;line-height:1}
+.price-card.popular .price-num{color:#fff}
+.price-num sup{font-size:20px;vertical-align:top;margin-top:12px}
+.price-mo{font-size:13px;color:#aaa;margin-bottom:22px}
+.price-card.popular .price-mo{color:rgba(255,255,255,.75)}
+.price-list{margin-bottom:28px;border-top:1px solid #f0f0f0;padding-top:16px}
+.price-card.popular .price-list{border-color:rgba(255,255,255,.25)}
+.price-list li{padding:9px 0;font-size:13px;color:#666;border-bottom:1px solid #f5f5f5;display:flex;align-items:center;justify-content:center;gap:8px}
+.price-card.popular .price-list li{color:rgba(255,255,255,.92);border-color:rgba(255,255,255,.15)}
+.price-list li i.yes{color:var(--teal)}
+.price-card.popular .price-list li i.yes{color:#fff}
+.price-list li i.no{color:#ddd}
+.price-btn{width:100%;padding:12px;border-radius:3px;font-family:'Raleway',sans-serif;font-weight:800;font-size:11px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .2s;border:2px solid var(--teal);background:transparent;color:var(--teal)}
+.price-btn:hover{background:var(--teal);color:#fff}
+.price-card.popular .price-btn{background:#fff;color:var(--teal);border-color:#fff}
+.price-card.popular .price-btn:hover{background:transparent;color:#fff}
+
+/* BLOG */
+.blog{padding:85px 0;background:#fff}
+.blog-top{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:48px;flex-wrap:wrap;gap:14px}
+.blog-top h2{font-family:'Raleway',sans-serif;font-size:clamp(22px,3vw,34px);font-weight:900;color:#2c3e50}
+.more-link{color:var(--teal);font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;border:2px solid var(--teal);padding:9px 20px;border-radius:3px;transition:all .2s}
+.more-link:hover{background:var(--teal);color:#fff}
+.blog-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:26px}
+.blog-card{border-radius:5px;overflow:hidden;border:1px solid #eee;transition:all .3s;background:#fff}
+.blog-card:hover{transform:translateY(-5px);box-shadow:0 14px 40px rgba(0,0,0,.08)}
+/* =============================================
+   BLOG IMAGES
+   Replace images/blog1.jpg, blog2.jpg, blog3.jpg
+============================================= */
+.blog-card img{width:100%;height:210px;object-fit:cover;transition:transform .4s}
+.blog-card:hover img{transform:scale(1.05)}
+.blog-body{padding:22px 20px}
+.blog-meta{display:flex;gap:14px;margin-bottom:10px}
+.blog-meta span{font-size:11px;color:#aaa;font-weight:600}
+.blog-meta i{color:var(--teal);margin-right:4px}
+.blog-card h4{font-family:'Raleway',sans-serif;font-size:15px;font-weight:800;color:#2c3e50;line-height:1.45;margin-bottom:10px}
+.blog-card p{color:#888;font-size:13px;line-height:1.7}
+
+/* FOOTER */
+footer{background:#1a252f;color:#aaa;padding:65px 0 0}
+.footer-grid{display:grid;grid-template-columns:2.2fr 1fr 1fr 1fr 1fr;gap:36px;margin-bottom:50px}
+.f-logo{font-family:'Raleway',sans-serif;font-size:24px;font-weight:900;color:#fff;margin-bottom:14px;display:block}
+.f-logo span{color:var(--teal)}
+.footer-about p{font-size:13px;line-height:1.85;margin-bottom:18px}
+.f-social{display:flex;gap:8px}
+.f-social a{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.07);display:flex;align-items:center;justify-content:center;font-size:13px;color:#aaa;transition:all .2s;border:1px solid rgba(255,255,255,.1)}
+.f-social a:hover{background:var(--teal);color:#fff;border-color:var(--teal)}
+.footer-col h5{font-family:'Raleway',sans-serif;color:#fff;font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:2px;margin-bottom:18px;padding-bottom:10px;border-bottom:2px solid var(--teal);display:inline-block}
+.footer-col ul li{margin-bottom:10px}
+.footer-col ul li a{font-size:13px;color:#aaa;transition:color .2s;display:flex;align-items:center;gap:6px}
+.footer-col ul li a:hover{color:var(--teal)}
+.footer-col ul li a::before{content:'›';color:var(--teal);font-size:16px}
+.footer-bottom{border-top:1px solid rgba(255,255,255,.07);padding:20px 0;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;font-size:12px}
+.footer-bottom a{color:var(--teal)}
+
+/* SCROLL ANIMATIONS */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .6s,transform .6s}
+.reveal.show{opacity:1;transform:translateY(0)}
+.reveal-l{opacity:0;transform:translateX(-36px);transition:opacity .65s,transform .65s}
+.reveal-l.show{opacity:1;transform:translateX(0)}
+.reveal-r{opacity:0;transform:translateX(36px);transition:opacity .65s,transform .65s}
+.reveal-r.show{opacity:1;transform:translateX(0)}
+
+/* RESPONSIVE */
+@media(max-width:1024px){
+  .price-grid{grid-template-columns:repeat(2,1fr)}
+  .price-card.popular{transform:scale(1)}
+  .footer-grid{grid-template-columns:1fr 1fr 1fr}
+  .how-grid{grid-template-columns:repeat(2,1fr)}
+  .consult-grid{grid-template-columns:1fr;text-align:center}
+  .cs-right-col{text-align:center}
+}
+@media(max-width:768px){
+  .nav-menu{display:none}
+  .hamburger{display:flex}
+  .hero-right-img{display:none}
+  .hero-content{max-width:100%}
+  .prog-grid{grid-template-columns:1fr}
+  .about-inner{grid-template-columns:1fr}
+  .about-img::before{display:none}
+  .testi-grid{grid-template-columns:1fr}
+  .story-wrap{grid-template-columns:1fr}
+  .price-grid{grid-template-columns:1fr 1fr}
+  .blog-grid{grid-template-columns:1fr}
+  .footer-grid{grid-template-columns:1fr 1fr}
+  .blog-top{flex-direction:column;align-items:flex-start}
+}
+@media(max-width:500px){
+  .price-grid{grid-template-columns:1fr}
+  .how-grid{grid-template-columns:1fr}
+  .footer-grid{grid-template-columns:1fr}
+  .footer-bottom{flex-direction:column;text-align:center}
+  .hero-btns{flex-direction:column}
+}
+</style>
+</head>
+<body>
+
+<!-- ========== TOPBAR ========== -->
+<div class="topbar">
+  <div class="container">
+    <div class="topbar-inner">
+      <div class="topbar-left">
+        <span><i class="fas fa-phone-alt"></i>+1 (800) 123-4567</span>
+        <span><i class="fas fa-envelope"></i>info@healthcoach.com</span>
+      </div>
+      <div class="topbar-right">
+        <a href="#"><i class="fab fa-facebook-f"></i></a>
+        <a href="#"><i class="fab fa-twitter"></i></a>
+        <a href="#"><i class="fab fa-google-plus-g"></i></a>
+        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== NAVBAR ========== -->
+<nav class="navbar">
+  <div class="container">
+    <div class="nav-inner">
+      <div class="logo">Health<span>Coach</span></div>
+      <div class="nav-menu">
+        <a href="#" class="active">Home</a>
+        <a href="#about">About</a>
+        <a href="#coach">Coach</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#services">Services</a>
+        <a href="#blog">Blog</a>
+        <a href="#contact" class="nav-contact">Contact</a>
+      </div>
+      <button class="hamburger" id="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <div class="mobile-menu" id="mobileMenu">
+      <a href="#">Home</a>
+      <a href="#about">About</a>
+      <a href="#coach">Coach</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#services">Services</a>
+      <a href="#blog">Blog</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ========== HERO ========== -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-overlay"></div>
+
+  <!-- HERO RIGHT PERSON IMAGE — replace src below -->
+  <div class="hero-right-img">
+    <img src="images/hero-person.jpg" alt="Fitness Person"/>
+  </div>
+
+  <div class="container">
+    <div class="hero-content reveal">
+      <h1>Improve Your <span>Health</span><br>and Nutrition</h1>
+      <p>Transform your body and mind with personalized coaching, evidence-based nutrition plans, and expert guidance tailored just for you. Start your wellness journey today.</p>
+      <div class="hero-btns">
+        <a href="#about" class="btn-teal">Learn More</a>
+        <a href="#contact" class="btn-outline-white">Contact Us</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== PROGRAMS ========== -->
+<section class="programs" id="services">
+  <div class="prog-grid">
+
+    <!-- PROGRAM 1 IMAGE — replace src below -->
+    <div class="prog-card">
+      <img src="images/program1.jpg" alt="Exercise Program"/>
+      <div class="prog-overlay">
+        <h3>Exercise Program</h3>
+        <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.</p>
+        <a href="#">Read More</a>
+      </div>
+    </div>
+
+    <!-- PROGRAM 2 IMAGE — replace src below -->
+    <div class="prog-card">
+      <img src="images/program2.jpg" alt="Nutrition Plans"/>
+      <div class="prog-overlay">
+        <h3>Nutrition Plans</h3>
+        <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.</p>
+        <a href="#">Read More</a>
+      </div>
+    </div>
+
+    <!-- PROGRAM 3 IMAGE — replace src below -->
+    <div class="prog-card">
+      <img src="images/program3.jpg" alt="Diet Program"/>
+      <div class="prog-overlay">
+        <h3>Diet Program</h3>
+        <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.</p>
+        <a href="#">Read More</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ========== ABOUT ========== -->
+<section class="about" id="about">
+  <div class="container">
+    <div class="about-inner">
+
+      <!-- COACH IMAGE — replace src below -->
+      <div class="about-img reveal-l">
+        <img src="images/coach.jpg" alt="Health Coach"/>
+      </div>
+
+      <div class="about-text reveal-r">
+        <span class="sec-tag">Welcome to HealthCoach</span>
+        <h2>Hello! Health Care is a natural way of improving your health</h2>
+        <p>A small river named Duden flows by their place and supplies it with the necessary regelialia. It is a paradisematic country, in which roasted parts of sentences fly into your mouth.</p>
+        <p>A small river named Duden flows by their place and supplies it with the necessary regelialia. It is a paradisematic country, in which roasted parts of sentences fly into your mouth. Even the all-powerful Pointing has no control about the blind texts it is an almost unorthographic life.</p>
+        <div class="author-row">
+          <!-- AUTHOR AVATAR — replace src below -->
+          <img src="images/author.jpg" alt="Cynthia Hunter"/>
+          <div>
+            <div class="author-name">Cynthia Hunter</div>
+            <div class="author-role">Personal Nutritionist</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ========== CONSULTATION STRIP ========== -->
+<section class="consult-strip" id="contact">
+  <div class="container">
+    <div class="consult-grid">
+      <div class="cs-side reveal-l">
+        <h4><i class="fas fa-heartbeat" style="margin-right:8px"></i>Healthcare Services</h4>
+        <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia there live.</p>
+        <a href="#">Find Services &rarr;</a>
+      </div>
+      <div class="cs-form reveal">
+        <h4>Free Consultation</h4>
+        <input type="text" placeholder="First Name"/>
+        <input type="text" placeholder="Last Name"/>
+        <select>
+          <option value="">Services</option>
+          <option>Exercise Program</option>
+          <option>Nutrition Plan</option>
+          <option>Diet Consulting</option>
+        </select>
+        <button>Make Appointment</button>
+      </div>
+      <div class="cs-side cs-right-col reveal-r">
+        <h4><i class="fas fa-user-md" style="margin-right:8px"></i>Find A Health Expert</h4>
+        <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia there live.</p>
+        <a href="#">Meet Our Experts &rarr;</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== TESTIMONIALS ========== -->
+<section class="testimonials" id="coach">
+  <div class="container">
+    <div class="sec-head reveal">
+      <span class="sec-tag">Testimonials</span>
+      <h2>Happy Clients &amp; Feedbacks</h2>
+    </div>
+    <div class="testi-grid">
+
+      <div class="testi-card reveal">
+        <div class="testi-q">"</div>
+        <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts. Separated they live in Bookmarksgrove right at the coast.</p>
+        <div class="testi-author">
+          <!-- TESTIMONIAL 1 AVATAR — replace src below -->
+          <img src="images/testi1.jpg" alt="Ken Stan"/>
+          <div>
+            <div class="t-name">Ken Stan</div>
+            <div class="t-role">Businessman</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testi-card reveal">
+        <div class="testi-q">"</div>
+        <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts. Separated they live in Bookmarksgrove right at the coast.</p>
+        <div class="testi-author">
+          <!-- TESTIMONIAL 2 AVATAR — replace src below -->
+          <img src="images/testi2.jpg" alt="Rossy Nakamori"/>
+          <div>
+            <div class="t-name">Rossy Nakamori</div>
+            <div class="t-role">Trainer</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testi-card reveal">
+        <div class="testi-q">"</div>
+        <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts. Separated they live in Bookmarksgrove right at the coast.</p>
+        <div class="testi-author">
+          <!-- TESTIMONIAL 3 AVATAR — replace src below -->
+          <img src="images/testi3.jpg" alt="Henry Doe"/>
+          <div>
+            <div class="t-name">Henry Doe</div>
+            <div class="t-role">Businessman</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="testi-dots">
+      <span class="active"></span><span></span><span></span><span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ========== HOW IT WORKS ========== -->
+<section class="how">
+  <div class="container">
+    <div class="sec-head reveal">
+      <span class="sec-tag">Other Services</span>
+      <h2>How it Works?</h2>
+    </div>
+    <div class="how-grid">
+      <div class="how-card reveal">
+        <div class="how-icon"><i class="fas fa-tasks"></i></div>
+        <h4>Follow the Program</h4>
+        <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.</p>
+      </div>
+      <div class="how-card reveal">
+        <div class="how-icon"><i class="fas fa-chart-bar"></i></div>
+        <h4>Work for Result</h4>
+        <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.</p>
+      </div>
+      <div class="how-card reveal">
+        <div class="how-icon"><i class="fas fa-leaf"></i></div>
+        <h4>Eat Healthy Food</h4>
+        <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.</p>
+      </div>
+      <div class="how-card reveal">
+        <div class="how-icon"><i class="fas fa-smile"></i></div>
+        <h4>Enjoy Your Life</h4>
+        <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== SUCCESS STORIES ========== -->
+<section class="stories">
+  <div class="container">
+    <div class="sec-head reveal">
+      <span class="sec-tag">Stories</span>
+      <h2>Successfull Stories</h2>
+    </div>
+    <div class="story-wrap">
+
+      <!-- STORY IMAGE — replace src below -->
+      <div class="story-img reveal-l">
+        <img src="images/story.jpg" alt="Success Story"/>
+      </div>
+
+      <div class="story-text reveal-r">
+        <span class="sec-tag">Success Story</span>
+        <p>A small river named Duden flows by their place and supplies it with the necessary regelialia. It is a paradisematic country, in which roasted parts of sentences fly into your mouth. Even the all-powerful Pointing has no control about the blind texts.</p>
+        <p>A small river named Duden flows by their place and supplies it with the necessary regelialia. It is a paradisematic country, in which roasted parts of sentences fly into your mouth, even the all-powerful Pointing has no control.</p>
+        <div class="s-name">Barry Smith</div>
+        <div class="s-role">Certified Strength Coach</div>
+        <div class="story-nav">
+          <button><i class="fas fa-chevron-left"></i></button>
+          <button><i class="fas fa-chevron-right"></i></button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ========== FREE CONSULTATION BANNER ========== -->
+<section class="free-banner">
+  <div class="container reveal">
+    <h2>We Provide Free Health Care Consultation</h2>
+    <p>Your health is our top priority and your satisfaction is always our mission.</p>
+    <a href="#contact" class="btn-dark">Free Consultation</a>
+  </div>
+</section>
+
+<!-- ========== PRICING ========== -->
+<section class="pricing" id="pricing">
+  <div class="container">
+    <div class="sec-head reveal">
+      <span class="sec-tag">Price &amp; Plans</span>
+      <h2>Choose Your Perfect Plans</h2>
+    </div>
+    <div class="price-grid">
+      <div class="price-card reveal">
+        <div class="plan-name">Starter</div>
+        <div class="price-num"><sup>$</sup>49</div>
+        <div class="price-mo">/ month</div>
+        <ul class="price-list">
+          <li><i class="fas fa-check yes"></i>10 Workouts</li>
+          <li><i class="fas fa-check yes"></i>5 Meal Plans in month</li>
+          <li><i class="fas fa-check yes"></i>Group Coaching</li>
+          <li><i class="fas fa-times no"></i>24/7 Customer support</li>
+        </ul>
+        <button class="price-btn">Get Started</button>
+      </div>
+      <div class="price-card reveal">
+        <div class="plan-name">Standard</div>
+        <div class="price-num"><sup>$</sup>79</div>
+        <div class="price-mo">/ month</div>
+        <ul class="price-list">
+          <li><i class="fas fa-check yes"></i>20 Workouts</li>
+          <li><i class="fas fa-check yes"></i>10 Meal Plans in month</li>
+          <li><i class="fas fa-check yes"></i>Group Coaching</li>
+          <li><i class="fas fa-check yes"></i>24/7 Customer support</li>
+        </ul>
+        <button class="price-btn">Get Started</button>
+      </div>
+      <div class="price-card popular reveal">
+        <div class="pop-badge">Popular</div>
+        <div class="plan-name">Premium</div>
+        <div class="price-num"><sup>$</sup>109</div>
+        <div class="price-mo">/ month</div>
+        <ul class="price-list">
+          <li><i class="fas fa-check yes"></i>30 Workouts</li>
+          <li><i class="fas fa-check yes"></i>20+ Meal Plans in month</li>
+          <li><i class="fas fa-check yes"></i>1-on-1 Group Coaching</li>
+          <li><i class="fas fa-check yes"></i>24/7 Customer support</li>
+        </ul>
+        <button class="price-btn">Get Started</button>
+      </div>
+      <div class="price-card reveal">
+        <div class="plan-name">Platinum</div>
+        <div class="price-num"><sup>$</sup>159</div>
+        <div class="price-mo">/ month</div>
+        <ul class="price-list">
+          <li><i class="fas fa-check yes"></i>50 Workouts</li>
+          <li><i class="fas fa-check yes"></i>Unlimited Meal Plans</li>
+          <li><i class="fas fa-check yes"></i>100% Group Coaching</li>
+          <li><i class="fas fa-check yes"></i>24/7 Customer support</li>
+        </ul>
+        <button class="price-btn">Get Started</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== BLOG ========== -->
+<section class="blog" id="blog">
+  <div class="container">
+    <div class="blog-top reveal">
+      <div>
+        <span class="sec-tag">Latest News From Our Blog</span>
+        <h2>Health Tips &amp; Articles</h2>
+      </div>
+      <a href="#" class="more-link">More In Blog</a>
+    </div>
+    <div class="blog-grid">
+
+      <!-- BLOG IMAGE 1 — replace src below -->
+      <div class="blog-card reveal">
+        <img src="images/blog1.jpg" alt="Blog Post 1"/>
+        <div class="blog-body">
+          <div class="blog-meta">
+            <span><i class="fas fa-user"></i>Admin</span>
+            <span><i class="fas fa-calendar"></i>Sep 12, 2024</span>
+          </div>
+          <h4>Even the all-powerful Pointing has no control about the blind texts</h4>
+          <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia.</p>
+        </div>
+      </div>
+
+      <!-- BLOG IMAGE 2 — replace src below -->
+      <div class="blog-card reveal">
+        <img src="images/blog2.jpg" alt="Blog Post 2"/>
+        <div class="blog-body">
+          <div class="blog-meta">
+            <span><i class="fas fa-user"></i>Admin</span>
+            <span><i class="fas fa-calendar"></i>Sep 14, 2024</span>
+          </div>
+          <h4>Even the all-powerful Pointing has no control about the blind texts</h4>
+          <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia.</p>
+        </div>
+      </div>
+
+      <!-- BLOG IMAGE 3 — replace src below -->
+      <div class="blog-card reveal">
+        <img src="images/blog3.jpg" alt="Blog Post 3"/>
+        <div class="blog-body">
+          <div class="blog-meta">
+            <span><i class="fas fa-user"></i>Admin</span>
+            <span><i class="fas fa-calendar"></i>Sep 16, 2024</span>
+          </div>
+          <h4>Even the all-powerful Pointing has no control about the blind texts</h4>
+          <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ========== FOOTER ========== -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-about">
+        <span class="f-logo">Health<span>Coach</span></span>
+        <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts. Separated they live.</p>
+        <div class="f-social">
+          <a href="#"><i class="fab fa-facebook-f"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+          <a href="#"><i class="fab fa-youtube"></i></a>
+          <a href="#"><i class="fab fa-linkedin-in"></i></a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h5>Services</h5>
+        <ul>
+          <li><a href="#">Exercise Program</a></li>
+          <li><a href="#">Nutrition Plans</a></li>
+          <li><a href="#">Diet Program</a></li>
+          <li><a href="#">Health Coaching</a></li>
+          <li><a href="#">Weight Loss</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>About</h5>
+        <ul>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Our Team</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Testimonials</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Resources</h5>
+        <ul>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">FAQs</a></li>
+          <li><a href="#">Events</a></li>
+          <li><a href="#">Newsletter</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Social</h5>
+        <ul>
+          <li><a href="#">Facebook</a></li>
+          <li><a href="#">Twitter</a></li>
+          <li><a href="#">Instagram</a></li>
+          <li><a href="#">YouTube</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>Copyright &copy; 2024 HealthCoach. All rights reserved.</span>
+      <span><a href="#">Privacy Policy</a> &nbsp;|&nbsp; <a href="#">Terms of Service</a></span>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Hamburger menu
+const hamburger = document.getElementById('hamburger');
+const mobileMenu = document.getElementById('mobileMenu');
+hamburger.addEventListener('click', () => {
+  mobileMenu.classList.toggle('open');
+  const s = hamburger.querySelectorAll('span');
+  if (mobileMenu.classList.contains('open')) {
+    s[0].style.transform = 'rotate(45deg) translate(5px,5px)';
+    s[1].style.opacity = '0';
+    s[2].style.transform = 'rotate(-45deg) translate(5px,-5px)';
+  } else {
+    s.forEach(x => { x.style.transform = ''; x.style.opacity = ''; });
+  }
+});
+document.querySelectorAll('.mobile-menu a').forEach(a => {
+  a.addEventListener('click', () => {
+    mobileMenu.classList.remove('open');
+    hamburger.querySelectorAll('span').forEach(x => { x.style.transform = ''; x.style.opacity = ''; });
+  });
+});
+
+// Scroll reveal
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('show'); obs.unobserve(e.target); } });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal,.reveal-l,.reveal-r').forEach(el => obs.observe(el));
+
+// Testimonial dots
+document.querySelectorAll('.testi-dots span').forEach((dot, i, all) => {
+  dot.addEventListener('click', () => { all.forEach(d => d.classList.remove('active')); dot.classList.add('active'); });
+});
+</script>
+</body>
+</html>
